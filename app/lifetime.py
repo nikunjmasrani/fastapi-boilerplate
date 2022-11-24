@@ -10,8 +10,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import sessionmaker
-# from demo_app.db.meta import meta
-# from demo_app.db.models import load_all_models
+
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
@@ -24,7 +23,9 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
 
     :param app: fastAPI application.
     """
+
     engine = create_async_engine(str(settings.db_url), echo=settings.db_echo)
+
     session_factory = async_scoped_session(
         sessionmaker(
             engine,
@@ -35,15 +36,6 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     )
     app.state.db_engine = engine
     app.state.db_session_factory = session_factory
-
-async def _create_tables() -> None:  # pragma: no cover
-    """Populates tables in the database."""
-    # load_all_models()
-    # engine = create_async_engine(str(settings.db_url))
-    # async with engine.begin() as connection:
-    #     await connection.run_sync(meta.create_all)
-    # await engine.dispose()
-    pass
 
 
 def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
@@ -60,7 +52,6 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
     @app.on_event("startup")
     async def _startup() -> None:  # noqa: WPS430
         _setup_db(app)
-        await _create_tables()
         init_redis(app)
         pass  # noqa: WPS420
 

@@ -1,5 +1,7 @@
 from fastapi import FastAPI
-from fastapi.responses import UJSONResponse
+from fastapi.requests import Request
+from fastapi.responses import UJSONResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
 from app.web.router import api_router
 from app.web import monitor
 from app.middleware import profiler
@@ -30,6 +32,7 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
     )
 
+    # todo handle validation error and send proper response.
     # Adds startup and shutdown events.
     register_startup_event(app)
     register_shutdown_event(app)

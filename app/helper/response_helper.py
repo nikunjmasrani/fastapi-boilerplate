@@ -1,26 +1,17 @@
-class ResponseComposer:
-    """
-        Response helper class for uniform response from all api
-    """
+from fastapi_utils.api_model import APIModel
 
-    def __init__(self):
-        self.data = {}
 
-    def make_response(self, message="", payload={}, status_code=200, show=0):
-        self.data["status_code"] = status_code
-        self.data["message"] = message
-        self.data["show"] = bool(show)
-        self.data["payload"] = payload
+class BaseResponse(APIModel):
+    message: str
+    status: int
+    payload: dict = {}
 
-        return self.data
 
-    def pagination_response(
-        self, message="", payload={}, status_code=200, show=0, pager={}
-    ):
-        self.data["status_code"] = status_code
-        self.data["message"] = message
-        self.data["show"] = bool(show)
-        self.data["payload"] = payload
-        self.data["pager"] = pager
 
-        return self.data
+
+
+
+
+
+
+

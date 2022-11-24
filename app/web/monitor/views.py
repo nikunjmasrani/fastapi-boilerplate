@@ -1,23 +1,32 @@
+import asyncio
+
 from fastapi import APIRouter
-from app.helper import response_helper
+from fastapi_utils.cbv import cbv
+from fastapi_utils.inferring_router import InferringRouter
+from app.web.monitor.response import HealthResponse
 from app import constants, logger
+from fastapi.requests import Request
 
-router = APIRouter()
+router = InferringRouter()
 
-response_composer = response_helper.ResponseComposer()
 
 # todo check db and redis connection in health api
 
 
-@router.get('/health')
-def health_check() -> None:
-    """
-    Checks the health of a project.
+@cbv(router)
+class Monitor:
+    @router.get('/health')
+    async def health_check(self, request: Request) -> HealthResponse:
+        logger.debug(f"Health api started: {request.state.request_id}")
+        await asyncio.sleep(3)
+        """
+        Checks the health of a project.
 
-    It returns 200 if the project is healthy.
-    """
-
-    logger.info("DEBUG Health api getting called")
-    return response_composer.make_response(
-        message=constants.HEALTH_SUCCESS_RESPONSE
-    )
+        It returns 200 if the project is healthy.
+        """
+        logger.debug(f"Health api competed: {request.state.request_id}")
+        return HealthResponse(
+            status=constants.HTTP_200_,
+            message=constants.HEALTH_SUCCESS_RESPONSE,
+            payload={}
+        )
