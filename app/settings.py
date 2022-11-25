@@ -54,6 +54,12 @@ class Settings(BaseSettings):
     redis_pass: Optional[str] = None
     redis_base: Optional[int] = None
 
+    # Variables for ElasticSearch
+    es_host_url: str = ""
+    es_user: str = ""
+    es_pass: str = ""
+    es_user_index: str = ""
+
     @property
     def db_url(self) -> URL:
         """

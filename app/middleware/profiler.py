@@ -1,6 +1,7 @@
 from app import logger
 from fastapi import Request, status
 from app import constants
+from app.exception import CustomException
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 import time
@@ -33,6 +34,12 @@ class ProfilerMiddleware(BaseHTTPMiddleware):
                 logger.warn(f"RequestID: {request_id} Taking more than 2 seconds please review the code.")
             return response
 
+        except CustomException as ce:
+            return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={
+                "message": ce.name,
+                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
+                "payload": {}
+            })
         except Exception as e:
             import traceback
             print(traceback.format_exc())

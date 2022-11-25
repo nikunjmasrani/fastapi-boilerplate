@@ -27,6 +27,6 @@ class Monitor:
         logger.debug(f"Health api competed: {request.state.request_id}")
         return HealthResponse(
             status=constants.HTTP_200_,
-            message=constants.HEALTH_SUCCESS_RESPONSE,
+            message=constants.HEALTH_SUCCESS,
             payload={}
         )
