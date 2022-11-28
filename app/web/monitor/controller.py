@@ -10,7 +10,6 @@ from fastapi.requests import Request
 router = InferringRouter()
 
 
-# todo check db and redis connection in health api
 
 
 @cbv(router)
@@ -23,6 +22,9 @@ class Monitor:
         Checks the health of a project.
 
         It returns 200 if the project is healthy.
+        """
+        """
+         todo add db, redis, es network call to check health in system.
         """
         logger.debug(f"Health api competed: {request.state.request_id}")
         return HealthResponse(
