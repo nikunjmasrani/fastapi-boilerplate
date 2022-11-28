@@ -1,4 +1,4 @@
-from app.web.base.controller import BaseService
+from app.web.base.service import BaseService
 from app.web.profile.db_service import Profile as ProfileDBService
 from app.web.profile.es_service import Profile as ProfileESService
 from app.web.profile.redis_service import Profile as ProfileRedisService
@@ -46,11 +46,29 @@ class Profile(BaseService):
         return user
 
     async def delete(self, data: Any, *args, **kwargs):
-        pass
+        """
+        function to delete user from system
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
 
     async def update(self, data: Any, *args, **kwargs):
+        """
+        function to update user.
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         pass
 
     async def get_list(self, data: Any, *args, **kwargs):
-        pass
-
+        """
+        function to get list of all users
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """

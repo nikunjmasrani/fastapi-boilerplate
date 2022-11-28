@@ -1,4 +1,5 @@
 from app import logger
+from app.settings import settings
 from fastapi import Request
 from app.exception import CustomException
 from app.helper.response_helper import BaseResponse
@@ -37,10 +38,8 @@ class ProfilerMiddleware(BaseHTTPMiddleware):
         except CustomException as ce:
             return BaseResponse.custom_exception_response(ce.name)
         except Exception as e:
-            # todo remove this traceback in final version
-            import traceback
-            print(traceback.format_exc())
+            if settings.environment == 'dev':
+                import traceback
+                print(traceback.format_exc())
             logger.error(f"RequestID: {request_id} -> Path {request.url.path} Error: {str(e)}")
             return BaseResponse.server_error_response()
-
-
