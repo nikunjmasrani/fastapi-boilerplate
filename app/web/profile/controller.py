@@ -1,42 +1,35 @@
-from app.web.base.controller import BaseController
-from app.web.profile.db_service import Profile as ProfileDBService
-from app.web.profile.es_service import Profile as ProfileESService
-from app.web.profile.redis_service import Profile as ProfileRedisService
-from typing import Any
-from sqlalchemy.ext.asyncio import AsyncSession
-from elasticsearch import AsyncElasticsearch
-from redis.asyncio import ConnectionPool
+from fastapi import Depends, status
+from app import constants
+from fastapi_utils.cbv import cbv
+from fastapi_utils.inferring_router import InferringRouter
+from app.web.profile.response import ProfileResponse
+from app.web.profile.validator import Profile as ProfileValidator
+from app.web.profile.service import Profile as ProfileService
+from app.services.db.dependency import get_db_session
+from app.services.es.dependency import get_es_client
+from app.services.redis.dependency import get_redis_pool
+router = InferringRouter()
 
 
-class Profile(BaseController):
+@cbv(router)
+class Profile:
 
-    def __init__(self, db_session: AsyncSession,
-                 es_client: AsyncElasticsearch,
-                 redis_pool: ConnectionPool):
-        self.db_session = db_session
-        self.es_client = es_client
-        self.redis_pool = redis_pool
+    @router.post('/')
+    async def create_profile(self,
+                             profile: ProfileValidator,
+                             db=Depends(get_db_session),
+                             es_client=Depends(get_es_client),
+                             redis_client=Depends(get_redis_pool)) -> ProfileResponse:
+        profile_service = ProfileService(db, es_client, redis_client)
+        response = await profile_service.create(profile)
+        return ProfileResponse(payload=response,
+                               message=constants.PROFILE_CREATED_SUCCESS,
+                               status=status.HTTP_200_OK)
 
-    async def create(self, data: Any, *args, **kwargs):
-        profile_db_service = ProfileDBService(self.db_session)
-        profile_es_service = ProfileESService(self.es_client)
-        profile_redis_service = ProfileRedisService(self.redis_pool)
-        user = await profile_db_service.create_profile(data)
-        await profile_es_service.index_user(data)
-        await profile_redis_service.save_user(user)
-        return user
-
-    async def get(self, data: Any, *args, **kwargs):
-        profile_service = ProfileDBService(self.db_session)
-        user = await profile_service.get_profile(data)
-        return user
-
-    async def delete(self, data: Any, *args, **kwargs):
-        pass
-
-    async def update(self, data: Any, *args, **kwargs):
-        pass
-
-    async def get_list(self, data: Any, *args, **kwargs):
-        pass
-
+    @router.get('/')
+    async def get_profile(self, user_id: int, db=Depends(get_db_session)):
+        profile_service = ProfileService(db)
+        response = await profile_service.get(user_id)
+        return ProfileResponse(payload=response,
+                               message=constants.PROFILE_GET_SUCCESS,
+                               status=status.HTTP_200_OK)

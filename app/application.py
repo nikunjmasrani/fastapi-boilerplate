@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from app.web.router import api_router
 from app.web import monitor
 from app.middleware import profiler
+from app.helper.response_helper import BaseResponse
 from app.lifetime import register_startup_event, register_shutdown_event
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -32,7 +33,11 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
     )
 
-    # todo handle validation error and send proper response.
+    # Custom request exception handler
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        return BaseResponse.request_exception_response(exc)
+
     # Adds startup and shutdown events.
     register_startup_event(app)
     register_shutdown_event(app)
