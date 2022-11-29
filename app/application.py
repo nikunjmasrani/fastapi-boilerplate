@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.requests import Request
-from fastapi.responses import UJSONResponse, JSONResponse
+from fastapi.responses import UJSONResponse
 from fastapi.exceptions import RequestValidationError
 from app.web.router import api_router
 from app.web import monitor
 from app.middleware import profiler
+from app.helper.language_helper import language_translator
 from app.helper.response_helper import BaseResponse
 from app.lifetime import register_startup_event, register_shutdown_event
 from fastapi.staticfiles import StaticFiles
@@ -35,8 +36,12 @@ def get_app() -> FastAPI:
 
     # Custom request exception handler
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
-        return BaseResponse.request_exception_response(exc)
+    async def custom_validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
+        return await BaseResponse.request_exception_response(
+            language_translator(request), exc
+        )
 
     # Adds startup and shutdown events.
     register_startup_event(app)
@@ -51,10 +56,6 @@ def get_app() -> FastAPI:
 
     # Adds static directory.
     # This directory is used to access swagger files.
-    app.mount(
-        "/static",
-        StaticFiles(directory=APP_ROOT / "static"),
-        name="static"
-    )
+    app.mount("/static", StaticFiles(directory=APP_ROOT / "static"), name="static")
 
     return app

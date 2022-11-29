@@ -1,0 +1,14 @@
+msgid "Application is working normally."
+msgstr "Die Anwendung funktioniert normal."
+
+msgid "User Profile found successfully."
+msgstr "Benutzerprofil erfolgreich gefunden."
+
+msgid "Something went wrong."
+msgstr "Etwas ist schief gelaufen."
+
+msgid "User with this name already exists"
+msgstr "Benutzer mit diesem Namen existiert bereits"
+
+msgid "User does not exists."
+msgstr "Benutzer existiert nicht."

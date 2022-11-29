@@ -1,39 +1,46 @@
-from fastapi_utils.api_model import APIModel
 from fastapi.responses import JSONResponse
-from app import constants
 from fastapi.encoders import jsonable_encoder
 from fastapi import status
+from app import constants
+from pydantic import BaseModel
 
 
-class BaseResponse(APIModel):
+class BaseResponse(BaseModel):
     message: str
     status: int
     payload: dict = {}
 
     @classmethod
-    def request_exception_response(cls, exc):
+    async def request_exception_response(cls, translator, exc):
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=jsonable_encoder(
-                {"message": "Validation Error", "payload": str(exc), "status_code": status.HTTP_422_UNPROCESSABLE_ENTITY}
+                {
+                    "message": translator(constants.VALIDATION_ERROR),
+                    "payload": str(exc),
+                    "status_code": status.HTTP_422_UNPROCESSABLE_ENTITY,
+                }
             ),
         )
 
     @classmethod
-    def custom_exception_response(cls, message):
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={
-            "message": message,
-            "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
-            "payload": {}
-        })
+    async def custom_exception_response(cls, translator, message):
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "message": translator(message),
+                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
+                "payload": {},
+            },
+        )
 
     @classmethod
-    def server_error_response(cls):
-        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={
-            "message": constants.SOMETHING_WENT_WRONG,
-            "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            "payload": {}
-        })
-
-
-
+    async def server_error_response(cls, translator):
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "message": translator(constants.SOMETHING_WENT_WRONG),
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "payload": {},
+            },
+        )

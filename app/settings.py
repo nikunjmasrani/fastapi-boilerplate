@@ -60,6 +60,9 @@ class Settings(BaseSettings):
     es_pass: str = ""
     es_user_index: str = ""
 
+    localization_dir: str = "locales"
+    localization_domain: str = "base"
+
     @property
     def db_url(self) -> URL:
         """
