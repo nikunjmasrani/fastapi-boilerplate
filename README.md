@@ -40,9 +40,14 @@ pre-commit package helps to check all linting related issues before committing c
         pre-commit install
       ``
     - Ref: https://medium.com/@anton-k./how-to-set-up-pre-commit-hooks-with-python-2b512290436
+
 ## i18n support
-fastapi does not support localization
+ steps to update localization
+ - add messages to locales/base.pot file
+ - run ``msgmerge locales/{language}/LC_MESSAGES/base.po locales/base.pot -U`` for each supported language
+ - create .mo file with ``msgfmt -o locales/{language}/LC_MESSAGES/base.mo locales/{language}/LC_MESSAGES/base``
  - ref: https://sbabashahi.medium.com/add-translation-to-fastapi-with-gettext-a769ae6dd6bb
+
 ## Action points
 Please consider below action points before starting new task with this framework
   - [ ] Before creating new API give a thought this API be sync or async?
