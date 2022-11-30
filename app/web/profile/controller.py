@@ -7,6 +7,7 @@ from app.web.profile.validator import Profile as ProfileValidator
 from app.web.profile.service import Profile as ProfileService
 from app.services.db.dependency import get_db_session
 from app.services.es.dependency import get_es_client
+from app.services.mongo.dependency import get_mongo_client
 from app.services.redis.dependency import get_redis_pool
 from app.helper.language_helper import language_translator
 
@@ -22,9 +23,10 @@ class Profile:
         db=Depends(get_db_session),
         es_client=Depends(get_es_client),
         redis_client=Depends(get_redis_pool),
+        mongo_client=Depends(get_mongo_client),
         translator=Depends(language_translator),
     ) -> ProfileResponse:
-        profile_service = ProfileService(db, es_client, redis_client)
+        profile_service = ProfileService(db, es_client, redis_client, mongo_client)
         response = await profile_service.create(profile)
         return ProfileResponse(
             payload=response,

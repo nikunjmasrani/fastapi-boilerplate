@@ -1,5 +1,11 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
+USER nikunj
+
+LABEL org.opencontainers.image.authors="nikunj.masrani@smartsensesolutions.com"
+LABEL version="1.0"
+LABEL description="Dokcer image for fastapi boilerplate"
+
 # Set the Current Working Directory inside the container.
 WORKDIR /app
 

@@ -60,6 +60,11 @@ class Settings(BaseSettings):
     es_pass: str = ""
     es_user_index: str = ""
 
+    mongo_host: str = ""
+    mongo_port: int
+    mongo_user: str = ""
+    mongo_pass: str = ""
+
     localization_dir: str = "locales"
     localization_domain: str = "base"
 
@@ -96,6 +101,20 @@ class Settings(BaseSettings):
             user=self.redis_user,
             password=self.redis_pass,
             path=path,
+        )
+
+    @property
+    def mongo_url(self) -> URL:
+        """
+        Assemble Mongo URL from settings.
+        :return: mongo URL
+        """
+        return URL.build(
+            scheme="mongodb",
+            host=self.mongo_host,
+            port=self.mongo_port,
+            user=self.mongo_user,
+            password=self.mongo_pass,
         )
 
     class Config:

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from app.settings import settings
 from app.services.redis.lifetime import init_redis, shutdown_redis
 from app.services.es.lifetime import init_es, shutdown_es
+from app.services.mongo.lifetime import init_mongo, shutdown_mongo
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -11,7 +12,6 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import sessionmaker
-
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
@@ -39,7 +39,9 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     app.state.db_session_factory = session_factory
 
 
-def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
+def register_startup_event(
+    app: FastAPI,
+) -> Callable[[], Awaitable[None]]:  # pragma: no cover
     """
     Actions to run on application startup.
 
@@ -55,12 +57,15 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
         _setup_db(app)
         init_redis(app)
         init_es(app)
-        pass  # noqa: WPS420
+        init_mongo(app)
+        # noqa: WPS420
 
     return _startup
 
 
-def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
+def register_shutdown_event(
+    app: FastAPI,
+) -> Callable[[], Awaitable[None]]:  # pragma: no cover
     """
     Actions to run on application's shutdown.
 
@@ -73,6 +78,7 @@ def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # p
         await app.state.db_engine.dispose()
         await shutdown_es(app)
         await shutdown_redis(app)
-        pass  # noqa: WPS420
+        await shutdown_mongo(app)
+        # noqa: WPS420
 
     return _shutdown

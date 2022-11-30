@@ -9,7 +9,6 @@ from app.exception import CustomException
 
 
 class Profile(DBService):
-
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
@@ -33,7 +32,10 @@ class Profile(DBService):
         self.db_session.add(user)
         await self.db_session.commit()
         await self.db_session.refresh(user)
-        return user.__dict__
+        user_data_dict = user.__dict__
+        print("DEBUG")
+        user_data_dict.pop("_sa_instance_state")
+        return user_data_dict
 
     async def get_data_by_id(self, _id: Any, *args, **kwargs) -> Dict:
         """
@@ -51,10 +53,31 @@ class Profile(DBService):
         return user[0].__dict__
 
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
+        """
+        function to update user data in SQL database
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         pass
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
+        """
+        delete user data from SQL database
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         pass
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
+        """
+        get list of user from SQL database.
+        :param data:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         pass
