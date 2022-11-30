@@ -12,6 +12,3 @@ msgstr "User with this name already exists"
 
 msgid "User does not exists."
 msgstr "User does not exists."
-
-msgid "Welcome"
-msgstr ""
