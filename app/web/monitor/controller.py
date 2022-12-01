@@ -1,5 +1,6 @@
 from fastapi import Depends, status
 from redis.asyncio import Redis
+from app import logger
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from app.web.monitor.response import HealthResponse
@@ -34,6 +35,7 @@ class Monitor:
         async with Redis(connection_pool=redis_client) as redis:
             await redis.ping()
         await mongo_client.server_info()
+        logger.info("This is sample log")
         return HealthResponse(
             status=status.HTTP_200_OK, message=constants.HEALTH_SUCCESS, payload={}
         )

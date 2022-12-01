@@ -13,7 +13,7 @@ from pathlib import Path
 import logging.config
 
 APP_ROOT = Path(__file__).parent.parent
-logging.config.fileConfig(fname="logging.conf", disable_existing_loggers=False)
+logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 
 
 def get_app() -> FastAPI:

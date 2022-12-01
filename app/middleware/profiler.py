@@ -30,11 +30,11 @@ class ProfilerMiddleware(BaseHTTPMiddleware):
             process_time = time.time() - start_time
             response.headers["X-Process-Time"] = str(process_time)
             response.headers["Request-ID"] = request_id
-            logger.debug(
-                f"RequestID: {request_id} -> Path {request.url.path} ->"
-                f" Status {response.status_code} "
-                f"-> Time Taken: {process_time}"
-            )
+            # logger.debug(
+            #     f"RequestID: {request_id} -> Path {request.url.path} ->"
+            #     f" Status {response.status_code} "
+            #     f"-> Time Taken: {process_time}"
+            # )
             if process_time >= 2:
                 logger.warn(
                     f"RequestID: {request_id} Taking more than 2 seconds."

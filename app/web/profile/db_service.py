@@ -33,7 +33,6 @@ class Profile(DBService):
         await self.db_session.commit()
         await self.db_session.refresh(user)
         user_data_dict = user.__dict__
-        print("DEBUG")
         user_data_dict.pop("_sa_instance_state")
         return user_data_dict
 
