@@ -1,6 +1,6 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
-USER nikunj
+#USER nikunj
 
 LABEL org.opencontainers.image.authors="nikunj.masrani@smartsensesolutions.com"
 LABEL version="1.0"
@@ -22,4 +22,5 @@ RUN pip install -r /app/requirements.txt
 COPY . /app
 
 EXPOSE 8080
-CMD ["gunicorn", "app.application:get_app()", "--workers=2", "--worker-class=uvicorn.workers.UvicornWorker", "--bind=0.0.0.0:8080"]
+#CMD ["gunicorn", "app.application:get_app()", "--workers=2", "--worker-class=uvicorn.workers.UvicornWorker", "--bind=0.0.0.0:8080", "--timeout=120"]
+CMD ["uvicorn", "app.application:get_app", "--workers=2", "--host=0.0.0.0", "--port=8080", "--timeout-keep-alive=120"]

@@ -59,3 +59,11 @@ Please consider below action points before starting new task with this framework
 
 ## Note
   - No need follow this framework if there is bare minimum requirement like creating 1-2 api and not full fledge service
+
+## Deployment
+  - Deploy application with gunicorn with below arguments (Recommended in FastAPI document)
+    - `--worker-class=uvicorn.workers.UvicornWorker` Async worker class for FastAPI
+    - `--timeout=120`  Workers silent for more than this many seconds are killed and restarted. Default: 5 (SIG 6 warning.)
+
+  - Deploy application with uvicorn with below arguments
+    - `--timeout-keep-alive=120`  Close Keep-Alive connections if no new data is received within this timeout. Default: 5
